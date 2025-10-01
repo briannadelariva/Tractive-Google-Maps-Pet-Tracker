@@ -94,23 +94,33 @@ Visit:
 - **Frontend**: http://localhost:3000
 - **Backend API**: http://localhost:3001
 
-## 🐳 Docker Development
+## 🔧 VS Code Dev Container
 
-Use Docker Compose for isolated development environment:
+This project includes a VS Code Dev Container configuration for a consistent development environment.
 
-```bash
-# Start services
-docker-compose up --build
+### Using the Dev Container
 
-# Run in background
-docker-compose up -d
+1. **Prerequisites:**
+   - [VS Code](https://code.visualstudio.com/)
+   - [Docker Desktop](https://www.docker.com/products/docker-desktop)
+   - [Dev Containers extension](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers)
 
-# View logs
-docker-compose logs -f
+2. **Open in Dev Container:**
+   - Open the project in VS Code
+   - When prompted, click "Reopen in Container"
+   - Or use Command Palette: `Dev Containers: Reopen in Container`
 
-# Stop services
-docker-compose down
-```
+3. **What's Included:**
+   - Node.js 18 environment
+   - All dependencies auto-installed
+   - VS Code extensions (ESLint, Prettier, Tailwind CSS, etc.)
+   - Port forwarding for frontend (3000) and backend (3001)
+   - Configured editor settings for consistent formatting
+
+4. **Run the application:**
+   ```bash
+   npm run dev
+   ```
 
 ## 📁 Project Structure
 
@@ -123,7 +133,6 @@ tractive-sandbox/
 │   │   ├── middleware/     # Express middleware
 │   │   ├── types/          # TypeScript definitions
 │   │   └── config/         # Configuration
-│   ├── Dockerfile
 │   └── package.json
 ├── frontend/               # React application
 │   ├── src/
@@ -132,9 +141,9 @@ tractive-sandbox/
 │   │   ├── services/       # API client
 │   │   ├── types/          # TypeScript types
 │   │   └── utils/          # Utilities
-│   ├── Dockerfile
 │   └── package.json
-├── docker-compose.yml      # Development environment
+├── .devcontainer/          # VS Code Dev Container config
+│   └── devcontainer.json
 ├── .env.sample            # Environment template
 └── README.md              # This file
 ```
