@@ -52,8 +52,8 @@ A production-ready web application that integrates with the Tractive API and Goo
 
 ### 1. Clone and Install
 ```bash
-git clone https://github.com/briannadelariva/tractive-sandbox.git
-cd tractive-sandbox
+git clone https://github.com/briannadelariva/Tractive-Google-Maps-Pet-Tracker.git
+cd Tractive-Google-Maps-Pet-Tracker
 npm run install-all
 ```
 
@@ -90,9 +90,11 @@ Enable these APIs in Google Cloud Console:
 npm run dev
 ```
 
-Visit:
-- **Frontend**: http://localhost:3000
-- **Backend API**: http://localhost:3001
+The application will start on two ports:
+- **Frontend (React)**: http://localhost:3000 - Main user interface
+- **Backend API (Express)**: http://localhost:3001 - REST API server
+
+> The frontend automatically proxies API requests to the backend, so you only need to access http://localhost:3000 in your browser.
 
 ## 🔧 VS Code Dev Container
 
@@ -125,8 +127,8 @@ This project includes a VS Code Dev Container configuration for a consistent dev
 ## 📁 Project Structure
 
 ```
-tractive-sandbox/
-├── backend/                 # Node.js API server
+Tractive-Google-Maps-Pet-Tracker/
+├── backend/                 # Node.js API server (port 3001)
 │   ├── src/
 │   │   ├── routes/         # API endpoints
 │   │   ├── services/       # Tractive & Google APIs
@@ -134,7 +136,7 @@ tractive-sandbox/
 │   │   ├── types/          # TypeScript definitions
 │   │   └── config/         # Configuration
 │   └── package.json
-├── frontend/               # React application
+├── frontend/               # React application (port 3000)
 │   ├── src/
 │   │   ├── components/     # React components
 │   │   ├── hooks/          # Custom hooks
