@@ -3,6 +3,7 @@ import cors from 'cors';
 import helmet from 'helmet';
 import rateLimit from 'express-rate-limit';
 import dotenv from 'dotenv';
+import path from 'path';
 import { config } from './config';
 
 // Load environment variables
@@ -11,7 +12,20 @@ dotenv.config();
 const app = express();
 
 // Security middleware
-app.use(helmet());
+app.use(helmet({
+  contentSecurityPolicy: {
+    directives: {
+      defaultSrc: ["'self'"],
+      scriptSrc: ["'self'", "'unsafe-inline'", "https://maps.googleapis.com", "https://maps.gstatic.com"],
+      styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
+      fontSrc: ["'self'", "https://fonts.gstatic.com"],
+      imgSrc: ["'self'", "data:", "https:", "blob:"],
+      connectSrc: ["'self'", "https://maps.googleapis.com"],
+      frameSrc: ["'self'"],
+      workerSrc: ["'self'", "blob:"],
+    },
+  },
+}));
 app.use(cors({
   origin: process.env.FRONTEND_URL || 'http://localhost:3000',
   credentials: true,
@@ -45,6 +59,30 @@ import trackerRoutes from './routes/trackers';
 app.use('/api/auth', authRoutes);
 app.use('/api/trackers', trackerRoutes);
 
+// Serve static files from frontend build (production)
+const frontendDistPath = path.join(__dirname, '../../frontend/dist');
+app.use(express.static(frontendDistPath));
+
+// For any non-API route, serve the React app (SPA fallback)
+app.get('*', (req, res, next) => {
+  // Skip API routes - they should return 404 JSON if not found
+  if (req.path.startsWith('/api/') || req.path === '/health') {
+    return next();
+  }
+  
+  // Serve index.html for all other routes (React Router will handle routing)
+  res.sendFile(path.join(frontendDistPath, 'index.html'), (err) => {
+    if (err) {
+      // If frontend build doesn't exist, show helpful message
+      res.status(404).json({
+        success: false,
+        error: 'Frontend not built. Run "npm run build:frontend" to build the frontend.',
+        timestamp: new Date().toISOString(),
+      });
+    }
+  });
+});
+
 // Global error handler
 app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
   console.error(err.stack);
@@ -56,8 +94,8 @@ app.use((err: any, req: express.Request, res: express.Response, next: express.Ne
   });
 });
 
-// Handle 404
-app.use('*', (req, res) => {
+// Handle 404 for API routes
+app.use('/api/*', (req, res) => {
   res.status(404).json({
     success: false,
     error: 'Route not found',
