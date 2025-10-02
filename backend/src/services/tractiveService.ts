@@ -1,7 +1,7 @@
 import axios, { AxiosInstance } from 'axios';
-import { config } from '../config';
-import { Tracker, Position, Geofence } from '../types';
-import { logError, logInfo } from '../utils/errorLogger';
+import { config } from '../config/index.js';
+import { Tracker, Position, Geofence } from '../types/index.js';
+import { logError, logInfo } from '../utils/errorLogger.js';
 
 export class TractiveService {
   private axiosInstance: AxiosInstance;

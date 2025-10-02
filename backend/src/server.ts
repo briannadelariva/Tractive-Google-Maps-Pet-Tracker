@@ -4,8 +4,8 @@ import helmet from 'helmet';
 import rateLimit from 'express-rate-limit';
 import dotenv from 'dotenv';
 import path from 'path';
-import { config } from './config';
-import { logError, logWarning } from './utils/errorLogger';
+import { config } from './config/index.js';
+import { logError, logWarning } from './utils/errorLogger.js';
 
 // Load environment variables
 dotenv.config();
@@ -77,8 +77,8 @@ app.get('/health', (req, res) => {
 });
 
 // API routes
-import authRoutes from './routes/auth';
-import trackerRoutes from './routes/trackers';
+import authRoutes from './routes/auth.js';
+import trackerRoutes from './routes/trackers.js';
 
 app.use('/api/auth', authRoutes);
 app.use('/api/trackers', trackerRoutes);

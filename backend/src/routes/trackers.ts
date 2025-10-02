@@ -1,9 +1,9 @@
 import { Router } from 'express';
-import { TractiveService } from '../services/tractiveService';
-import { GoogleMapsService } from '../services/googleMapsService';
-import { ApiResponse, Position, TrailStats } from '../types';
-import { config } from '../config';
-import { logError, logWarning } from '../utils/errorLogger';
+import { TractiveService } from '../services/tractiveService.js';
+import { GoogleMapsService } from '../services/googleMapsService.js';
+import { ApiResponse, Position, TrailStats } from '../types/index.js';
+import { config } from '../config/index.js';
+import { logError, logWarning } from '../utils/errorLogger.js';
 
 const router = Router();
 const tractiveService = new TractiveService();

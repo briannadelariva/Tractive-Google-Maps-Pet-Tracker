@@ -1,7 +1,7 @@
 import axios, { AxiosInstance } from 'axios';
-import { config } from '../config';
-import { DistanceMatrixResult, Place, ElevationPoint, Position, TrailStats } from '../types';
-import { logError } from '../utils/errorLogger';
+import { config } from '../config/index.js';
+import { DistanceMatrixResult, Place, ElevationPoint, Position, TrailStats } from '../types/index.js';
+import { logError } from '../utils/errorLogger.js';
 
 export class GoogleMapsService {
   private axiosInstance: AxiosInstance;

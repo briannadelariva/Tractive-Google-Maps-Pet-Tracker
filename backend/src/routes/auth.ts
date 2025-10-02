@@ -1,7 +1,7 @@
 import { Router } from 'express';
-import { TractiveService } from '../services/tractiveService';
-import { ApiResponse } from '../types';
-import { logError } from '../utils/errorLogger';
+import { TractiveService } from '../services/tractiveService.js';
+import { ApiResponse } from '../types/index.js';
+import { logError } from '../utils/errorLogger.js';
 
 const router = Router();
 const tractiveService = new TractiveService();
