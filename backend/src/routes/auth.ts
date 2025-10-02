@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { TractiveService } from '../services/tractiveService';
 import { ApiResponse } from '../types';
+import { logError } from '../utils/errorLogger';
 
 const router = Router();
 const tractiveService = new TractiveService();
@@ -30,7 +31,7 @@ router.post('/login-tractive', async (req, res) => {
       } as ApiResponse<never>);
     }
   } catch (error) {
-    console.error('Authentication error:', error);
+    logError(error, 'Authentication error');
     res.status(500).json({
       success: false,
       error: 'Authentication failed',

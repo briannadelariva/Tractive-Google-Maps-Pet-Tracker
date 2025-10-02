@@ -1,6 +1,7 @@
 import axios, { AxiosInstance } from 'axios';
 import { config } from '../config';
 import { DistanceMatrixResult, Place, ElevationPoint, Position, TrailStats } from '../types';
+import { logError } from '../utils/errorLogger';
 
 export class GoogleMapsService {
   private axiosInstance: AxiosInstance;
@@ -34,7 +35,7 @@ export class GoogleMapsService {
       
       return null;
     } catch (error) {
-      console.error('Reverse geocoding failed:', error);
+      logError(error, 'Reverse geocoding failed');
       return null;
     }
   }
@@ -73,7 +74,7 @@ export class GoogleMapsService {
       
       return [];
     } catch (error) {
-      console.error('Distance matrix calculation failed:', error);
+      logError(error, 'Distance matrix calculation failed');
       return [];
     }
   }
@@ -123,7 +124,7 @@ export class GoogleMapsService {
       
       return places;
     } catch (error) {
-      console.error('Places search failed:', error);
+      logError(error, 'Places search failed');
       return [];
     }
   }
@@ -159,7 +160,7 @@ export class GoogleMapsService {
       
       return [];
     } catch (error) {
-      console.error('Elevation query failed:', error);
+      logError(error, 'Elevation query failed');
       return [];
     }
   }
@@ -188,7 +189,7 @@ export class GoogleMapsService {
 
       return response.data;
     } catch (error) {
-      console.error('Directions query failed:', error);
+      logError(error, 'Directions query failed');
       return null;
     }
   }

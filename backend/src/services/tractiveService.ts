@@ -1,6 +1,7 @@
 import axios, { AxiosInstance } from 'axios';
 import { config } from '../config';
 import { Tracker, Position, Geofence } from '../types';
+import { logError, logInfo } from '../utils/errorLogger';
 
 export class TractiveService {
   private axiosInstance: AxiosInstance;
@@ -54,13 +55,13 @@ export class TractiveService {
         // Set default authorization header
         this.axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${this.accessToken}`;
         
-        console.log('Tractive authentication successful');
+        logInfo('Tractive authentication successful', 'TractiveService');
         return true;
       }
       
       return false;
     } catch (error) {
-      console.error('Tractive authentication failed:', error);
+      logError(error, 'Tractive authentication failed');
       return false;
     }
   }
@@ -103,7 +104,7 @@ export class TractiveService {
         capabilities: tracker.capabilities || [],
       }));
     } catch (error) {
-      console.error('Failed to get trackers:', error);
+      logError(error, 'Failed to get trackers');
       throw new Error('Failed to fetch trackers');
     }
   }
@@ -141,7 +142,7 @@ export class TractiveService {
       
       return null;
     } catch (error) {
-      console.error('Failed to get latest position:', error);
+      logError(error, 'Failed to get latest position');
       throw new Error('Failed to fetch latest position');
     }
   }
@@ -178,7 +179,7 @@ export class TractiveService {
         pos_status: pos.pos_status || 0,
       }));
     } catch (error) {
-      console.error('Failed to get position history:', error);
+      logError(error, 'Failed to get position history');
       throw new Error('Failed to fetch position history');
     }
   }
@@ -207,7 +208,7 @@ export class TractiveService {
         })),
       }));
     } catch (error) {
-      console.error('Failed to get geofences:', error);
+      logError(error, 'Failed to get geofences');
       throw new Error('Failed to fetch geofences');
     }
   }
@@ -225,7 +226,7 @@ export class TractiveService {
       
       return response.status === 200;
     } catch (error) {
-      console.error('Failed to toggle live tracking:', error);
+      logError(error, 'Failed to toggle live tracking');
       throw new Error('Failed to toggle live tracking');
     }
   }
@@ -240,7 +241,7 @@ export class TractiveService {
       const response = await this.axiosInstance.post(`/tracker/${trackerId}/led`);
       return response.status === 200;
     } catch (error) {
-      console.error('Failed to trigger LED:', error);
+      logError(error, 'Failed to trigger LED');
       throw new Error('Failed to trigger LED');
     }
   }
@@ -255,7 +256,7 @@ export class TractiveService {
       const response = await this.axiosInstance.post(`/tracker/${trackerId}/buzzer`);
       return response.status === 200;
     } catch (error) {
-      console.error('Failed to trigger buzzer:', error);
+      logError(error, 'Failed to trigger buzzer');
       throw new Error('Failed to trigger buzzer');
     }
   }
