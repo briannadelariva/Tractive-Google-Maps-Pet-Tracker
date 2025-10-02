@@ -1,8 +1,9 @@
 import { Router } from 'express';
-import { TractiveService } from '../services/tractiveService';
-import { GoogleMapsService } from '../services/googleMapsService';
-import { ApiResponse, Position, TrailStats } from '../types';
-import { config } from '../config';
+import { TractiveService } from '../services/tractiveService.js';
+import { GoogleMapsService } from '../services/googleMapsService.js';
+import { ApiResponse, Position, TrailStats } from '../types/index.js';
+import { config } from '../config/index.js';
+import { logError, logWarning } from '../utils/errorLogger.js';
 
 const router = Router();
 const tractiveService = new TractiveService();
@@ -22,7 +23,7 @@ router.get('/', async (req, res) => {
       timestamp: new Date().toISOString(),
     } as ApiResponse<typeof trackers>);
   } catch (error) {
-    console.error('Get trackers error:', error);
+    logError(error, 'Get trackers error');
     res.status(500).json({
       success: false,
       error: 'Failed to fetch trackers',
@@ -54,7 +55,7 @@ router.get('/:id/position', async (req, res) => {
       address = await googleMapsService.reverseGeocode(position.latitude, position.longitude);
       position.address = address || undefined;
     } catch (error) {
-      console.warn('Reverse geocoding failed:', error);
+      logWarning('Reverse geocoding failed - feature may be disabled or quota exceeded', 'GoogleMaps');
     }
 
     // Calculate distance from home if configured
@@ -70,7 +71,7 @@ router.get('/:id/position', async (req, res) => {
           distanceFromHome = distanceResults[0].distance.value;
         }
       } catch (error) {
-        console.warn('Distance calculation failed:', error);
+        logWarning('Distance calculation failed - feature may be disabled or quota exceeded', 'GoogleMaps');
       }
     }
 
@@ -83,7 +84,7 @@ router.get('/:id/position', async (req, res) => {
       timestamp: new Date().toISOString(),
     } as ApiResponse<typeof position & { distanceFromHome: number | null }>);
   } catch (error) {
-    console.error('Get position error:', error);
+    logError(error, 'Get position error');
     res.status(500).json({
       success: false,
       error: 'Failed to fetch position',
@@ -120,7 +121,7 @@ router.get('/:id/history', async (req, res) => {
         
         trailStats = googleMapsService.calculateTrailStats(positions, elevations);
       } catch (error) {
-        console.warn('Trail stats calculation failed:', error);
+        logWarning('Trail stats calculation failed - feature may be disabled or quota exceeded', 'GoogleMaps');
         trailStats = googleMapsService.calculateTrailStats(positions);
       }
     }
@@ -144,7 +145,7 @@ router.get('/:id/history', async (req, res) => {
       summary: { count: number; dateRange: { from: Date; to: Date } };
     }>);
   } catch (error) {
-    console.error('Get history error:', error);
+    logError(error, 'Get history error');
     res.status(500).json({
       success: false,
       error: 'Failed to fetch position history',
@@ -168,7 +169,7 @@ router.get('/:id/geofences', async (req, res) => {
       timestamp: new Date().toISOString(),
     } as ApiResponse<typeof geofences>);
   } catch (error) {
-    console.error('Get geofences error:', error);
+    logError(error, 'Get geofences error');
     res.status(500).json({
       success: false,
       error: 'Failed to fetch geofences',
@@ -224,7 +225,7 @@ router.get('/:id/places', async (req, res) => {
       radius: number;
     }>);
   } catch (error) {
-    console.error('Get places error:', error);
+    logError(error, 'Get places error');
     res.status(500).json({
       success: false,
       error: 'Failed to fetch nearby places',
@@ -279,7 +280,7 @@ router.get('/:id/eta', async (req, res) => {
       timestamp: new Date().toISOString(),
     } as ApiResponse<typeof etaResults[0]>);
   } catch (error) {
-    console.error('Get ETA error:', error);
+    logError(error, 'Get ETA error');
     res.status(500).json({
       success: false,
       error: 'Failed to calculate ETA',
@@ -322,7 +323,7 @@ router.get('/:id/streetview', async (req, res) => {
       timestamp: new Date().toISOString(),
     } as ApiResponse<{ url: string; location: { lat: number; lng: number } }>);
   } catch (error) {
-    console.error('Get Street View error:', error);
+    logError(error, 'Get Street View error');
     res.status(500).json({
       success: false,
       error: 'Failed to generate Street View URL',
@@ -359,7 +360,7 @@ router.post('/:id/live', async (req, res) => {
       timestamp: new Date().toISOString(),
     } as ApiResponse<{ message: string; active: boolean }>);
   } catch (error) {
-    console.error('Toggle live tracking error:', error);
+    logError(error, 'Toggle live tracking error');
     res.status(500).json({
       success: false,
       error: 'Failed to toggle live tracking',
@@ -385,7 +386,7 @@ router.post('/:id/led', async (req, res) => {
       timestamp: new Date().toISOString(),
     } as ApiResponse<{ message: string }>);
   } catch (error) {
-    console.error('Trigger LED error:', error);
+    logError(error, 'Trigger LED error');
     res.status(500).json({
       success: false,
       error: 'Failed to trigger LED',
@@ -411,7 +412,7 @@ router.post('/:id/buzzer', async (req, res) => {
       timestamp: new Date().toISOString(),
     } as ApiResponse<{ message: string }>);
   } catch (error) {
-    console.error('Trigger buzzer error:', error);
+    logError(error, 'Trigger buzzer error');
     res.status(500).json({
       success: false,
       error: 'Failed to trigger buzzer',

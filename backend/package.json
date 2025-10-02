@@ -2,9 +2,10 @@
   "name": "tractive-tracker-backend",
   "version": "1.0.0",
   "description": "Backend API for Tractive pet tracker integration",
+  "type": "module",
   "main": "dist/server.js",
   "scripts": {
-    "dev": "nodemon src/server.ts",
+    "dev": "tsx watch src/server.ts",
     "build": "tsc",
     "start": "node dist/server.js",
     "test": "jest",

@@ -4,10 +4,34 @@ import helmet from 'helmet';
 import rateLimit from 'express-rate-limit';
 import dotenv from 'dotenv';
 import path from 'path';
-import { config } from './config';
+import { config } from './config/index.js';
+import { logError, logWarning } from './utils/errorLogger.js';
 
 // Load environment variables
 dotenv.config();
+
+// Validate configuration and provide helpful warnings
+function validateConfiguration(): void {
+  const warnings: string[] = [];
+  
+  if (!config.tractive.email) {
+    warnings.push('TRACTIVE_EMAIL not set - authentication will fail');
+  }
+  if (!config.tractive.password) {
+    warnings.push('TRACTIVE_PASSWORD not set - authentication will fail');
+  }
+  if (!config.google.apiKey) {
+    warnings.push('GOOGLE_MAPS_API_KEY not set - Google Maps features will be unavailable');
+  }
+  
+  if (warnings.length > 0) {
+    console.log('\n⚠️  Configuration Warnings:');
+    warnings.forEach(warning => logWarning(warning, 'Config'));
+    console.log('');
+  }
+}
+
+validateConfiguration();
 
 const app = express();
 
@@ -53,8 +77,8 @@ app.get('/health', (req, res) => {
 });
 
 // API routes
-import authRoutes from './routes/auth';
-import trackerRoutes from './routes/trackers';
+import authRoutes from './routes/auth.js';
+import trackerRoutes from './routes/trackers.js';
 
 app.use('/api/auth', authRoutes);
 app.use('/api/trackers', trackerRoutes);
@@ -87,7 +111,8 @@ if (config.nodeEnv === 'production') {
 
 // Global error handler
 app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
-  console.error(err.stack);
+  // Log error with clean formatting
+  logError(err, 'Unhandled error', config.nodeEnv === 'development');
   
   res.status(err.status || 500).json({
     success: false,
