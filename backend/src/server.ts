@@ -59,29 +59,31 @@ import trackerRoutes from './routes/trackers';
 app.use('/api/auth', authRoutes);
 app.use('/api/trackers', trackerRoutes);
 
-// Serve static files from frontend build (production)
-const frontendDistPath = path.join(__dirname, '../../frontend/dist');
-app.use(express.static(frontendDistPath));
+// Serve static files from frontend build (production only)
+if (config.nodeEnv === 'production') {
+  const frontendDistPath = path.join(__dirname, '../../frontend/dist');
+  app.use(express.static(frontendDistPath));
 
-// For any non-API route, serve the React app (SPA fallback)
-app.get('*', (req, res, next) => {
-  // Skip API routes - they should return 404 JSON if not found
-  if (req.path.startsWith('/api/') || req.path === '/health') {
-    return next();
-  }
-  
-  // Serve index.html for all other routes (React Router will handle routing)
-  res.sendFile(path.join(frontendDistPath, 'index.html'), (err) => {
-    if (err) {
-      // If frontend build doesn't exist, show helpful message
-      res.status(404).json({
-        success: false,
-        error: 'Frontend not built. Run "npm run build:frontend" to build the frontend.',
-        timestamp: new Date().toISOString(),
-      });
+  // For any non-API route, serve the React app (SPA fallback)
+  app.get('*', (req, res, next) => {
+    // Skip API routes - they should return 404 JSON if not found
+    if (req.path.startsWith('/api/') || req.path === '/health') {
+      return next();
     }
+    
+    // Serve index.html for all other routes (React Router will handle routing)
+    res.sendFile(path.join(frontendDistPath, 'index.html'), (err) => {
+      if (err) {
+        // If frontend build doesn't exist, show helpful message
+        res.status(404).json({
+          success: false,
+          error: 'Frontend not built. Run "npm run build:frontend" to build the frontend.',
+          timestamp: new Date().toISOString(),
+        });
+      }
+    });
   });
-});
+}
 
 // Global error handler
 app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
