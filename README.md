@@ -118,8 +118,15 @@ This project includes a VS Code Dev Container configuration for a consistent dev
    - VS Code extensions (ESLint, Prettier, Tailwind CSS, etc.)
    - Port forwarding for frontend (3000) and backend (3001)
    - Configured editor settings for consistent formatting
+   - SSH configuration with automatic filtering of macOS-specific options
 
-4. **Run the application:**
+4. **SSH Configuration:**
+   - Your host SSH keys are automatically copied to the container
+   - macOS-specific options (like `UseKeychain`) are filtered out for Linux compatibility
+   - Git operations work seamlessly without configuration errors
+   - See `.devcontainer/README.md` for troubleshooting
+
+5. **Run the application:**
    ```bash
    npm run dev
    ```

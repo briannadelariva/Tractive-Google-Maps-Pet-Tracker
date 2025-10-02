@@ -52,12 +52,14 @@
 
   "postCreateCommand": "npm run install-all",
   
+  "postStartCommand": "sh .devcontainer/setup-ssh.sh",
+  
   "remoteEnv": {
     "NODE_ENV": "development"
   },
 
   "mounts": [
-    "source=${localEnv:HOME}${localEnv:USERPROFILE}/.ssh,target=/home/node/.ssh,readonly,type=bind,consistency=cached"
+    "source=${localEnv:HOME}${localEnv:USERPROFILE}/.ssh,target=/tmp/.ssh-mount,readonly,type=bind,consistency=cached"
   ],
 
   "remoteUser": "node"
